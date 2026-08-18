@@ -1,0 +1,139 @@
+{
+  "name": "exp-firewall",
+  "version": "0.1.0",
+  "description": "A provenance-aware, evidence-gated shared experience firewall for DeepSeek Harness agents.",
+  "license": "MIT",
+  "type": "module",
+  "main": "./lib/index.js",
+  "types": "./lib/types/index.d.ts",
+  "bin": {
+    "exp-firewall": "./lib/cli.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./lib/types/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./client": {
+      "types": "./lib/types/client/index.d.ts",
+      "default": "./lib/client/index.js"
+    },
+    "./types": {
+      "types": "./lib/types/types/index.d.ts",
+      "default": "./lib/types/index.js"
+    },
+    "./pure": {
+      "types": "./lib/types/pure/index.d.ts",
+      "default": "./lib/pure/index.js"
+    },
+    "./service": {
+      "types": "./lib/types/service.d.ts",
+      "default": "./lib/service.js"
+    },
+    "./dashboard": {
+      "types": "./lib/types/web-api.d.ts",
+      "default": "./lib/web-api.js"
+    },
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "assets/evidence-recovery.gif",
+    "demos/**/*.mjs",
+    "demos/**/*.md",
+    "demos/**/*.txt",
+    "lib/**/*.js",
+    "lib/types/**/*.d.ts",
+    "lib/cli.js",
+    "cordis.patch.yml",
+    "README.md",
+    "README.zh.md",
+    "scripts/node-next-smoke.mjs",
+    "scripts/packed-smoke.mjs",
+    "scripts/render-hero-gif.py",
+    "scripts/render-hero-gif.sh"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json && tsc -p tsconfig.client.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "publint": "pnpm run build && publint",
+    "smoke:nodenext": "pnpm run build && node scripts/node-next-smoke.mjs",
+    "check": "pnpm run typecheck && pnpm run test && pnpm run publint && pnpm run smoke:nodenext",
+    "demo:m0": "pnpm run build && node demos/m0.mjs --verify",
+    "demo:consensus": "pnpm run build && node demos/m0.mjs --verify",
+    "demo:m2": "pnpm run build && node demos/m2-keyless.mjs",
+    "demo:evidence": "pnpm run build && node demos/m2-keyless.mjs --verify",
+    "demo:concurrent": "pnpm run build && node demos/concurrent-verification.mjs --verify",
+    "test:snapshot:m2": "pnpm run build && node demos/m2-keyless.mjs --verify",
+    "smoke:packed": "node scripts/packed-smoke.mjs",
+    "prepare": "pnpm run build"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-runtime",
+        "@deepseek-ai/dsh-client-ui-settings"
+      ],
+      "platform": "web"
+    }
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "link:../my-harness/vendor/cordis",
+    "@deepseek-ai/cordis-plugin-include": "link:../my-harness/vendor/include",
+    "@deepseek-ai/cordis-plugin-loader": "link:../my-harness/vendor/loader",
+    "@deepseek-ai/dsh-app-boot": "link:../my-harness/packages/boot/app-boot",
+    "@deepseek-ai/dsh-agent": "link:../my-harness/packages/core/agent",
+    "@deepseek-ai/dsh-client-runtime": "link:../my-harness/packages/client/runtime",
+    "@deepseek-ai/dsh-client-ui-settings": "link:../my-harness/packages/client/ui-settings",
+    "@deepseek-ai/dsh-client-ui-slots": "link:../my-harness/packages/client/ui-slots",
+    "@deepseek-ai/dsh-fs": "link:../my-harness/packages/fs/fs",
+    "@deepseek-ai/dsh-host-webserver": "link:../my-harness/packages/host/webserver",
+    "@deepseek-ai/dsh-llm": "link:../my-harness/packages/llm/llm",
+    "@deepseek-ai/dsh-session": "link:../my-harness/packages/core/session",
+    "@deepseek-ai/dsh-system-prompt": "link:../my-harness/packages/core/system-prompt",
+    "@deepseek-ai/dsh-tools": "link:../my-harness/packages/core/tools",
+    "@types/node": "^22.20.0",
+    "@types/react": "~18.3.1",
+    "publint": "^0.3.21",
+    "react": "^18.2.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-agent": "^0.1.0-rc.5",
+    "@deepseek-ai/dsh-client-runtime": "^0.1.0-rc.5",
+    "@deepseek-ai/dsh-client-ui-settings": "^0.1.0-rc.5",
+    "@deepseek-ai/dsh-client-ui-slots": "^0.1.0-rc.5",
+    "@deepseek-ai/dsh-fs": "^0.1.0-rc.5",
+    "@deepseek-ai/dsh-host-webserver": "^0.1.0-rc.5",
+    "@deepseek-ai/dsh-session": "^0.1.0-rc.5",
+    "@deepseek-ai/dsh-tools": "^0.1.0-rc.5",
+    "react": "^18.2.0"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/dsh-client-runtime": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-ui-settings": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-client-ui-slots": {
+      "optional": true
+    },
+    "@deepseek-ai/dsh-host-webserver": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0"
+  },
+  "packageManager": "pnpm@11.19.0"
+}

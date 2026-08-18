@@ -1,0 +1,19 @@
+# Provider precedes the policy Consumer so every pre-execution request sees a
+# fully initialized Store. The read-only dashboard is a separate, optional row.
+
+- insert:
+    - id: exp-firewall-service
+      name: exp-firewall/service
+
+    - id: exp-firewall
+      name: exp-firewall
+      inject: [expFirewall]
+
+    - id: exp-firewall-dashboard
+      name: exp-firewall/dashboard
+      disabled: true
+      inject: [expFirewall, webServer]
+      config:
+        dashboard:
+          enabled: true
+          host: 127.0.0.1

@@ -1,0 +1,6 @@
+A | source=session-a/call-a | outcome=failure:FS_NOT_FOUND | claim=suspected | supporters=1
+B | source=session-b/call-b | outcome=failure:FS_NOT_FOUND | transition=suspected->corroborated | supporters=2
+C | source=session-c/call-c-denied | decision=deny | reason=corroborated | dispatched=false
+SYSTEM | evidence=/workspace/target.txt | change=absent->present:v2 | transition=corroborated->stale
+C | source=session-c/call-c-verify | decision=verify | reason=evidence-changed | lease=granted | dispatched=true
+C | outcome=success | transitions=stale->verifying,verifying->resolved | claim=resolved

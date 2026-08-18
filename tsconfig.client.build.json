@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "declaration": true,
+    "declarationMap": true,
+    "declarationDir": "lib/types/client",
+    "emitDeclarationOnly": false,
+    "jsx": "react-jsx",
+    "noEmit": false,
+    "outDir": "lib/client",
+    "rewriteRelativeImportExtensions": true,
+    "rootDir": "client",
+    "sourceMap": true
+  },
+  "include": ["client"]
+}

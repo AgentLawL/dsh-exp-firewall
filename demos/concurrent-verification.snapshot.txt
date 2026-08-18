@@ -1,0 +1,4 @@
+principal-c | decision=verify | reason=evidence-changed | lease=lease-c
+principal-d | decision=wait | reason=verification-in-progress | owner=principal-c
+principal-e | decision=wait | reason=verification-in-progress | owner=principal-c
+summary | leasesGranted=1 | verificationWaits=2

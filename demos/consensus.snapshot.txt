@@ -1,0 +1,3 @@
+principal-a | outcome=failure:FS_NOT_FOUND | claim=suspected | supporters=1
+principal-b | outcome=failure:FS_NOT_FOUND | claim=corroborated | supporters=2
+principal-c | decision=deny | reason=corroborated | dispatched=false
