@@ -6,8 +6,9 @@ import { fileURLToPath } from 'node:url'
 import { spawnSync } from 'node:child_process'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
+const rootManifest = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'))
 const suppliedArtifact = process.argv.slice(2).find((argument) => argument !== '--')
-const artifact = resolve(suppliedArtifact ?? join(root, 'artifacts', 'exp-firewall-0.1.0.tgz'))
+const artifact = resolve(suppliedArtifact ?? join(root, 'artifacts', `${rootManifest.name}-${rootManifest.version}.tgz`))
 const fixture = await mkdtemp(join(tmpdir(), 'exp-firewall-packed-'))
 const packageDir = join(fixture, 'node_modules', 'exp-firewall')
 
@@ -25,10 +26,9 @@ try {
     "import * as dashboard from 'exp-firewall/dashboard'",
     "import * as service from 'exp-firewall/service'",
     "import { pureApiVersion } from 'exp-firewall/pure'",
-    "import * as client from 'exp-firewall/client'",
     "if (typeof main.apply !== 'function' || main.name !== 'exp-firewall') throw new Error('invalid main export')",
     "if (typeof service.apply !== 'function' || typeof dashboard.apply !== 'function') throw new Error('invalid plugin export')",
-    "if (pureApiVersion !== 1 || typeof client.OverviewPoller !== 'function') throw new Error('invalid subpath export')",
+    "if (pureApiVersion !== 1) throw new Error('invalid subpath export')",
     "process.stdout.write('packed exports: ok\\n')",
     '',
   ].join('\n'))
@@ -36,6 +36,14 @@ try {
   assert.equal(imported.status, 0, imported.stderr)
   assert.equal(imported.stdout, 'packed exports: ok\n')
   process.stdout.write(imported.stdout)
+
+  const clientSmoke = spawnSync(process.execPath, [join(root, 'scripts/client-bundle-smoke.mjs'), join(packageDir, 'lib/client.js')], {
+    cwd: root,
+    encoding: 'utf8',
+  })
+  assert.equal(clientSmoke.status, 0, clientSmoke.stderr)
+  assert.equal(clientSmoke.stdout, 'client ModuleLoader handoff: ok\n')
+  process.stdout.write(clientSmoke.stdout)
 
   const manifest = JSON.parse(await readFile(join(packageDir, 'package.json'), 'utf8'))
   assert.equal(manifest.dsh.bundle.patch, './cordis.patch.yml')
@@ -45,6 +53,7 @@ try {
     'README.md',
     'README.zh.md',
     'lib/index.js',
+    'lib/client.js',
     'lib/types/index.d.ts',
   ]) {
     await readFile(join(packageDir, relative))

@@ -5,13 +5,12 @@
     "declaration": true,
     "declarationMap": true,
     "declarationDir": "lib/types/client",
-    "emitDeclarationOnly": false,
+    "emitDeclarationOnly": true,
     "jsx": "react-jsx",
     "noEmit": false,
-    "outDir": "lib/client",
     "rewriteRelativeImportExtensions": true,
     "rootDir": "client",
-    "sourceMap": true
+    "sourceMap": false
   },
   "include": ["client"]
 }

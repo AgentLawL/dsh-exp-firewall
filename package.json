@@ -1,6 +1,6 @@
 {
   "name": "exp-firewall",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A provenance-aware, evidence-gated shared experience firewall for DeepSeek Harness agents.",
   "license": "MIT",
   "type": "module",
@@ -16,7 +16,7 @@
     },
     "./client": {
       "types": "./lib/types/client/index.d.ts",
-      "default": "./lib/client/index.js"
+      "default": "./lib/client.js"
     },
     "./types": {
       "types": "./lib/types/types/index.d.ts",
@@ -42,30 +42,35 @@
     "demos/**/*.mjs",
     "demos/**/*.md",
     "demos/**/*.txt",
-    "lib/**/*.js",
+    "lib/*.js",
+    "lib/pure/*.js",
+    "lib/types/**/*.js",
+    "lib/client.js",
     "lib/types/**/*.d.ts",
     "lib/cli.js",
     "cordis.patch.yml",
     "README.md",
     "README.zh.md",
     "scripts/node-next-smoke.mjs",
+    "scripts/client-bundle-smoke.mjs",
     "scripts/packed-smoke.mjs",
     "scripts/render-hero-gif.py",
     "scripts/render-hero-gif.sh"
   ],
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && tsc -p tsconfig.client.build.json",
+    "build": "tsc -p tsconfig.build.json && tsc -p tsconfig.client.build.json && tsdown",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "publint": "pnpm run build && publint",
     "smoke:nodenext": "pnpm run build && node scripts/node-next-smoke.mjs",
-    "check": "pnpm run typecheck && pnpm run test && pnpm run publint && pnpm run smoke:nodenext",
+    "check": "pnpm run typecheck && pnpm run test && pnpm run publint && pnpm run smoke:nodenext && pnpm run smoke:client",
     "demo:m0": "pnpm run build && node demos/m0.mjs --verify",
     "demo:consensus": "pnpm run build && node demos/m0.mjs --verify",
     "demo:m2": "pnpm run build && node demos/m2-keyless.mjs",
     "demo:evidence": "pnpm run build && node demos/m2-keyless.mjs --verify",
     "demo:concurrent": "pnpm run build && node demos/concurrent-verification.mjs --verify",
     "test:snapshot:m2": "pnpm run build && node demos/m2-keyless.mjs --verify",
+    "smoke:client": "node scripts/client-bundle-smoke.mjs",
     "smoke:packed": "node scripts/packed-smoke.mjs",
     "prepare": "pnpm run build"
   },
@@ -85,8 +90,8 @@
     "@deepseek-ai/cordis": "link:../my-harness/vendor/cordis",
     "@deepseek-ai/cordis-plugin-include": "link:../my-harness/vendor/include",
     "@deepseek-ai/cordis-plugin-loader": "link:../my-harness/vendor/loader",
-    "@deepseek-ai/dsh-app-boot": "link:../my-harness/packages/boot/app-boot",
     "@deepseek-ai/dsh-agent": "link:../my-harness/packages/core/agent",
+    "@deepseek-ai/dsh-app-boot": "link:../my-harness/packages/boot/app-boot",
     "@deepseek-ai/dsh-client-runtime": "link:../my-harness/packages/client/runtime",
     "@deepseek-ai/dsh-client-ui-settings": "link:../my-harness/packages/client/ui-settings",
     "@deepseek-ai/dsh-client-ui-slots": "link:../my-harness/packages/client/ui-slots",
@@ -100,6 +105,7 @@
     "@types/react": "~18.3.1",
     "publint": "^0.3.21",
     "react": "^18.2.0",
+    "tsdown": "^0.22.14",
     "typescript": "^6.0.3",
     "vitest": "^4.1.8"
   },
