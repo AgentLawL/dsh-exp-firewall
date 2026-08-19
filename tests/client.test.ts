@@ -4,11 +4,16 @@ import {
   apply,
   claimDetailModel,
   claimExplorerRow,
+  claimStatusLabel,
+  en,
   ExperienceFirewallClient,
   FirewallDashboard,
   FirewallApiError,
+  inject,
+  overviewMetricLabel,
   OverviewPoller,
   overviewMetrics,
+  zh,
 } from '../client/index.ts'
 
 const summary = {
@@ -28,17 +33,42 @@ afterEach(() => {
 })
 
 describe('browser read-only client', () => {
-  it('registers a concrete read-only Settings dashboard', () => {
+  it('registers localized dictionaries and a concrete read-only Settings dashboard', () => {
     const dispose = vi.fn()
     const register = vi.fn(() => dispose)
+    const registerLocale = vi.fn(() => vi.fn())
+    const t = (key: keyof typeof zh) => zh[key]
+    const bind = vi.fn(() => t)
+    const effect = vi.fn((callback: () => unknown) => callback())
     const inject = vi.fn((_slot: string, callback: () => unknown) => callback())
-    apply({ slots: { inject, register } } as never)
+    apply({ effect, locale: { bind, register: registerLocale }, slots: { inject, register } } as never)
+    expect(bind).toHaveBeenCalledWith('exp-firewall')
+    expect(registerLocale).toHaveBeenCalledWith('exp-firewall', { zh, en })
+    expect(effect).toHaveBeenCalledWith(expect.any(Function), 'exp-firewall: dashboard dictionaries')
     expect(inject).toHaveBeenCalledWith('settings.plugins.tab', expect.any(Function))
     expect(register).toHaveBeenCalledWith(expect.objectContaining({
-      name: 'settings.plugins.tab', id: 'exp-firewall', order: 20,
+      name: 'settings.plugins.tab', id: 'exp-firewall', order: 20, locale: 'exp-firewall',
     }), FirewallDashboard)
-    const options = (register.mock.calls as unknown as [[{ inject: () => { client: unknown; pollIntervalMs: number } }]])[0][0]
+    const options = (register.mock.calls as unknown as [[{ inject: () => { client: unknown; pollIntervalMs: number }; label: () => string }]])[0][0]
+    expect(options.label()).toBe('经验防火墙')
     expect(options.inject()).toMatchObject({ client: expect.any(ExperienceFirewallClient), pollIntervalMs: 1_000 })
+  })
+
+  it('ships complete Chinese and English labels for every status and Overview metric', () => {
+    expect(inject).toEqual(['slots', 'locale'])
+    expect(Object.keys(en)).toEqual(Object.keys(zh))
+    const translate = (dictionary: typeof zh | typeof en) => ((key: keyof typeof zh) => dictionary[key]) as never
+    const statuses = ['suspected', 'corroborated', 'stale', 'verifying', 'contradicted', 'resolved', 'superseded'] as const
+    expect(statuses.map(status => claimStatusLabel(status, translate(zh)))).toEqual([
+      '待确认', '已佐证', '已过期', '验证中', '已反驳', '已解决', '已取代',
+    ])
+    expect(statuses.map(status => claimStatusLabel(status, translate(en)))).toEqual([
+      'Suspected', 'Corroborated', 'Stale', 'Verifying', 'Contradicted', 'Resolved', 'Superseded',
+    ])
+    const metricKeys = Object.keys(overviewMetrics(summary)) as Array<keyof ReturnType<typeof overviewMetrics>>
+    expect(metricKeys.map(key => overviewMetricLabel(key, translate(zh)))).toEqual([
+      '待确认 Claim', '已佐证 Claim', '已发出警告', '已拒绝调用', '已授予 Lease', '已解决 Claim', '跨 Agent 命中',
+    ])
   })
 
   it('encodes filters, supports cancellation, and preserves stable API errors', async () => {

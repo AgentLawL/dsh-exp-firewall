@@ -1,5 +1,6 @@
 /** Optional read-only browser client and framework-neutral view models. */
 import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'
+import type {} from '@deepseek-ai/dsh-client-locale/client'
 import type {} from '@deepseek-ai/dsh-client-ui-settings/client'
 import type {
   ClaimDetail,
@@ -10,8 +11,17 @@ import type {
 } from 'exp-firewall/types'
 
 import { FirewallDashboard } from './FirewallDashboard.tsx'
+import { en, NS, zh, type FirewallLocaleKey } from './locales.ts'
 
-export { FirewallDashboard } from './FirewallDashboard.tsx'
+export { FirewallDashboard, claimStatusLabel, overviewMetricLabel } from './FirewallDashboard.tsx'
+export { en, NS, zh, type FirewallLocaleKey } from './locales.ts'
+
+declare module '@deepseek-ai/dsh-client-ui-slots' {
+  interface LocaleNamespaceMap {
+    /** Read-only Exp Firewall dashboard copy. */
+    'exp-firewall': FirewallLocaleKey
+  }
+}
 
 /** Public read-only audit event shape returned by the HTTP API. */
 export interface FirewallEventDto {
@@ -26,7 +36,7 @@ export interface FirewallEventDto {
 /** Browser plugin name. */
 export const name = 'exp-firewall-client'
 /** Browser services required to register the optional Settings tab. */
-export const inject = ['slots']
+export const inject = ['slots', 'locale']
 
 /** Fetch-compatible function accepted by the API client. */
 export type FirewallFetch = (input: string, init?: RequestInit) => Promise<Response>
@@ -205,11 +215,14 @@ export function claimDetailModel(claim: ClaimDetail, events: readonly FirewallEv
 /** Register the read-only Exp Firewall dashboard as a Plugins settings tab. */
 export function apply(ctx: ClientContext): void {
   const client = new ExperienceFirewallClient()
+  const t = ctx.locale.bind(NS)
+  ctx.effect(() => ctx.locale.register(NS, { zh, en }), 'exp-firewall: dashboard dictionaries')
   ctx.slots.inject('settings.plugins.tab', () => ctx.slots.register({
     name: 'settings.plugins.tab',
     id: 'exp-firewall',
     order: 20,
-    label: () => 'Exp Firewall',
+    label: () => t('tab.label'),
+    locale: NS,
     inject: () => ({ client, pollIntervalMs: 1_000 }),
   }, FirewallDashboard))
 }

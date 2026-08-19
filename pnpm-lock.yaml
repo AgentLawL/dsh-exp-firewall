@@ -23,6 +23,9 @@ importers:
       '@deepseek-ai/dsh-app-boot':
         specifier: link:../my-harness/packages/boot/app-boot
         version: link:../my-harness/packages/boot/app-boot
+      '@deepseek-ai/dsh-client-locale':
+        specifier: link:../my-harness/packages/client/locale
+        version: link:../my-harness/packages/client/locale
       '@deepseek-ai/dsh-client-runtime':
         specifier: link:../my-harness/packages/client/runtime
         version: link:../my-harness/packages/client/runtime

@@ -17,7 +17,7 @@ dsh plugin --profile <profile> add exp-firewall
 也可以直接安装下载的发布制品：
 
 ```sh
-dsh plugin --profile <profile> add ./exp-firewall-0.1.0.tgz
+dsh plugin --profile <profile> add ./exp-firewall-0.1.2.tgz
 ```
 
 Bundle 会先挂载 `exp-firewall/service`，再挂载 `exp-firewall` 策略 Consumer。`exp-firewall/dashboard` 默认禁用；只应在提供 `webServer` 的 Web Profile 中启用。发布包包含预构建 ESM 与 TypeScript 类型声明。
@@ -42,7 +42,7 @@ Bundle 会先挂载 `exp-firewall/service`，再挂载 `exp-firewall` 策略 Con
 
 ## 只读界面
 
-Dashboard 提供 summary、claims、claim detail 和 events 四个 GET API；browser plugin 在 DSH Web Settings 注册只读 Exp Firewall 页，默认每秒轮询，并渲染 Overview、可过滤/分页的 Claim Explorer 与带来源的 Claim Detail。CLI 仅提供 `status`、`claims`、`claim` 与 `events`，没有变更命令。独立运行 CLI 时可用 `EXP_FIREWALL_DATA_DIR` 指向数据目录。
+Dashboard 提供 summary、claims、claim detail 和 events 四个 GET API；browser plugin 在 DSH Web Settings 注册只读 Exp Firewall 页，默认每秒轮询，并渲染 Overview、可过滤/分页的 Claim Explorer 与带来源的 Claim Detail。界面提供简体中文与英文，跟随 DSH 全局语言设置即时切换，且不会重置 Dashboard 状态；scope、指纹、Evidence、Decision reason 等稳定审计值保持原样。CLI 仅提供 `status`、`claims`、`claim` 与 `events`，没有变更命令。独立运行 CLI 时可用 `EXP_FIREWALL_DATA_DIR` 指向数据目录。
 
 ## 数据与安全
 

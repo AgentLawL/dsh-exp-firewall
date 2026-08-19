@@ -17,7 +17,7 @@ dsh plugin --profile <profile> add exp-firewall
 To install a downloaded release artifact instead:
 
 ```sh
-dsh plugin --profile <profile> add ./exp-firewall-0.1.0.tgz
+dsh plugin --profile <profile> add ./exp-firewall-0.1.2.tgz
 ```
 
 The Bundle mounts `exp-firewall/service` before the `exp-firewall` policy Consumer. The `exp-firewall/dashboard` row is disabled by default; enable it only in a Web profile that provides `webServer`. Published packages contain prebuilt ESM and TypeScript declarations.
@@ -72,7 +72,7 @@ GET /plugins/exp-firewall/api/claims/:id
 GET /plugins/exp-firewall/api/events
 ```
 
-The browser plugin registers a read-only Exp Firewall tab in DSH Web Settings. It polls once per second by default and renders Overview, a filtered/paginated Claim Explorer, and Claim Detail provenance. The CLI is also read-only:
+The browser plugin registers a read-only Exp Firewall tab in DSH Web Settings. It polls once per second by default and renders Overview, a filtered/paginated Claim Explorer, and Claim Detail provenance. Its English and Simplified Chinese UI follows the global DSH language setting and updates in place without resetting dashboard state. Stable audit values such as scope, fingerprints, Evidence, and Decision reasons are deliberately left unchanged. The CLI is also read-only:
 
 ```sh
 exp-firewall status [--scope <scope>]
